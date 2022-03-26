@@ -1,78 +1,5 @@
 pipeline {
-     /*agent {
-    kubernetes {
-      label 'jenkins-slave'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-  component: ci
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: jenkins
-  containers:
-  - name: terraform
-    image: hashicorp/terraform:0.14.8
-    command:
-    - cat
-    tty: true
-  - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: helm-kubectl-azcli
-    image: ams0/az-cli-kubectl-helm:latest
-    command:
-    - cat
-    tty: true
-  - name: checkov
-    image: bridgecrew/checkov
-    command:
-    - cat
-    tty: true
-"""
-}
-  }*/
-   agent {
-    kubernetes {
-      label 'jenkins-slave'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-  component: ci
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: jenkins
-  containers:
-  - name: terraform
-    image: hashicorp/terraform:0.14.8
-    command:
-    - cat
-    tty: true
-  - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: helm-kubectl-azcli
-    image: aliarslandocker/azcli-helm-kubectl:V1 
-    command:
-    - cat
-    tty: true  
-  - name: checkov
-    image: bridgecrew/checkov
-    command:
-    - cat
-    tty: true
-"""
-}
-  } 
+   agent any
     environment {
         AZURE_SUBSCRIPTION_ID= credentials('azuresubid') 
         AZURE_TENANT_ID= credentials('azuretenantid')
@@ -83,21 +10,21 @@ spec:
     }
     parameters {
        
-        string(name: 'clustername', defaultValue: 'cmpaks', description: '')
-        string(name: 'rgname', defaultValue: 'rg-cmp-aks', description: '')
+        string(name: 'clustername', defaultValue: 'demoaks', description: '')
+        string(name: 'rgname', defaultValue: 'rg-demo-aks', description: '')
         string(name: 'location', defaultValue: 'eastus', description: '')
         string(name: 'nodesize', defaultValue: 'Standard_D2_v2', description: '')
         string(name: 'mincount', defaultValue: '1', description: '')
         string(name: 'maxcount', defaultValue: '3', description: '')
         string(name: 'dnsprefix', defaultValue: 'kubernetes-dns', description: '')
-        string(name: 'owner', defaultValue: 'CMP', description: '')
+        string(name: 'owner', defaultValue: 'demo', description: '')
         string(name: 'environment', defaultValue: 'Dev', description: '')
     }
     stages {
         stage('Git checkout') { 
             steps{
                 sh 'whoami'
-                git branch: 'main', credentialsId: 'ali123', url: 'https://github.com/aliarslan-graduate/AKS.git'
+                git branch: 'main', credentialsId: 'ali123', url: 'https://github.com/aliarslangit/terraform-azure-jenkins.git'
         }
         }
   /*       stage('checkov') { 
@@ -164,60 +91,6 @@ spec:
             }
         }  
     
-
-        stage('Run Kubectl scripts') {
-         /*   when {
-                expression {
-                    params.destroy==false
-                }
-            } */
-            steps {
-                container('helm-kubectl-azcli'){
-                withCredentials([azureServicePrincipal('azurelogin')])
-                        {
-                            sh 'whoami'
-                            sh 'bash scripts/packages.sh'
-                            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                            sh 'az aks get-credentials --name $clustername --resource-group $rgname'
-
-                             // sh 'bash kubebench/kubebench.sh'
-                            //  sh 'bash ingress/ingress.sh'
-                            //  sh 'bash scripts/kubecost.sh'
-                            //  sh 'bash scripts/helm.sh'
-                             // sh 'bash scripts/kube-dashboard.sh'
-                           //   sh 'bash scripts/opa.sh'
-                            //sh 'bash az-ingress/ingress.sh'
-                              sh 'bash updated-ingress/ingress.sh'
-                          
-                          //  sh "bash scripts/kubectl.sh $clustername $rgname"
-                              
-                           // sh 'bash scripts/ingress.sh'
-                              
-                          
-                              
-                       
-                              
-                                                  
-                       }
-                
-             }      
-            }
  }
 
- }}/*
-        stage('Destroy the Infrastructure created by Terraform'){
-            when {
-                expression {
-                    params.destroy
-                }
-            }
-            steps{
-                container(terraform) {
-                sh 'terraform workspace select $TWORKSPACE'
-                sh 'terraform init'
-                sh 'terraform destroy -auto-approve'
-            }
-        }
-        }
-    }
-}*/
+ }
