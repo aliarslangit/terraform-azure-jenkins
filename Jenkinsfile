@@ -35,7 +35,13 @@ pipeline {
         }
         }
          }*/
-         
+             stage('Installing Azure Modules') {
+            steps {
+                    sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
+                    sh 'sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
+                    sh 'sudo apt install terraform'
+                }
+        }
         stage('Terraform Initialization') { 
             /*    when {
                 expression {
