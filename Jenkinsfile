@@ -43,24 +43,15 @@ pipeline {
                 }
             }*/
             steps{
-                
-                container('terraform'){
                    sh 'terraform init'
-                  //  sh 'terraform workspace select $TWORKSPACE || terraform workspace new $TWORKSPACE'
-        }
     }
         }
         stage('Check Terraform plan') { 
-          /*  when {
-                expression {
-                    params.destroy==false
-                }
-            }*/
             steps {
-                container('terraform'){
+
                sh 'terraform plan -var clustername=$clustername -var rgname=$rgname -var location=$location -var nodesize=$nodesize -var mincount=$mincount -var maxcount=$maxcount -var dnsprefix=$dnsprefix -var owner=$owner -var environment=$environment'
 
-                  }  
+     
             }
         }
         stage('Apply the terraform code') {
@@ -70,10 +61,10 @@ pipeline {
                 }
             }*/
             steps{
-                container('terraform') {
+         
               //  sh 'terraform apply' 
                 
-              //  sh 'terraform apply -var clustername=$clustername -var rgname=$rgname -var location=$location -var nodesize=$nodesize -var mincount=$mincount -var maxcount=$maxcount -var dnsprefix=$dnsprefix -var owner=$owner -var environment=$environment -auto-approve'   
+                sh 'terraform apply -var clustername=$clustername -var rgname=$rgname -var location=$location -var nodesize=$nodesize -var mincount=$mincount -var maxcount=$maxcount -var dnsprefix=$dnsprefix -var owner=$owner -var environment=$environment -auto-approve'   
             /*    sh 'terraform apply $TWORKSPACE.out'
                 script {
                 EKSNAME = sh (
@@ -87,7 +78,7 @@ pipeline {
                 returnStdout: true).trim()
                 echo "${EKSCLUSTERAUTOSCALERARN}"
                } */
-             }      
+                  
             }
         }  
     
