@@ -37,6 +37,14 @@ pipeline {
          }*/
              stage('Installing Azure Modules') {
             steps {
+                    sh 'sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+                    withCredentials([azureServicePrincipal('azcli')]) {
+                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                    }
+                }
+        }
+             stage('Installing Terraform') {
+            steps {
                     sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
                     sh 'sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
                     sh 'sudo apt install terraform'
