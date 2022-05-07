@@ -24,6 +24,18 @@ Once Jenkins is installed, explore it. Open the web browser and type "localhost:
 Enter the credentials and log in. If you install Jenkins for the first time, the dashboard will ask you to install the recommended plugins. Install all the recommended plugins.
 
 ### Installation on Ubuntu:
+For ubuntu, you can use bash script `https://github.com/aliarslangit/bash-scripts-examples/blob/main/jenkins.sh`, which will install all the required binaries and libraris along with the jenkins server.
+
+## Terraform
+
+- [Terraform for Windows](https://www.terraform.io/downloads)
+- [Terraform for Ubuntu](https://github.com/aliarslangit/bash-scripts-examples/blob/main/terraform.sh)
+
+
+## Authors
+
+Created by [Ali Arslan](https://github.com/aliarslangit)
+
 
 
 
